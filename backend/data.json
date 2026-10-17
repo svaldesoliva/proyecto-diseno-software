@@ -1,0 +1,184 @@
+[
+  {
+    "id": "intel-core-i9-14900k",
+    "category": "cpu",
+    "name": "Intel Core i9-14900K",
+    "brand": "Intel",
+    "model": "i9-14900K",
+    "imageUrl": "https://api.solotodo.com/products/222080/picture/?width=400&height=400",
+    "verifiedOn": "2026-10-15",
+    "specifications": {
+      "series": "Core i9",
+      "family": "Intel Core (14th Gen)",
+      "architecture": "Raptor Lake",
+      "cores": 24,
+      "threads": 32,
+      "maxFrequencyGhz": 6,
+      "l2CacheMb": 32,
+      "l3CacheMb": 36,
+      "basePowerW": 125,
+      "maxPowerW": 253,
+      "socket": "LGA1700",
+      "maxMemoryGb": 192,
+      "memoryTypes": [
+        "DDR4",
+        "DDR5"
+      ],
+      "launchDate": "2023-Q4",
+      "cpuMarkScore": 58178
+    },
+    "sources": [
+      {
+        "name": "Intel",
+        "url": "https://www.intel.la/content/www/xl/es/products/sku/236773/intel-core-i9-processor-14900k-36m-cache-up-to-6-00-ghz/specifications.html"
+      },
+      {
+        "name": "PassMark (CPU Mark)",
+        "url": "https://www.cpubenchmark.net/common_cpus.html"
+      }
+    ]
+  },
+  {
+    "id": "amd-ryzen-9-9950x",
+    "category": "cpu",
+    "name": "AMD Ryzen 9 9950X",
+    "brand": "AMD",
+    "model": "9950X",
+    "imageUrl": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-9-9950x.jpg",
+    "verifiedOn": "2026-10-15",
+    "specifications": {
+      "series": "Ryzen 9",
+      "family": "Ryzen 9000 Series",
+      "architecture": "Zen 5",
+      "cores": 16,
+      "threads": 32,
+      "maxFrequencyGhz": 5.7,
+      "l2CacheMb": 16,
+      "l3CacheMb": 64,
+      "basePowerW": null,
+      "maxPowerW": null,
+      "tdpW": 170,
+      "socket": "AM5",
+      "maxMemoryGb": 256,
+      "memoryTypes": [
+        "DDR5"
+      ],
+      "launchDate": "2024-08-15",
+      "cpuMarkScore": 65692
+    },
+    "sources": [
+      {
+        "name": "AMD",
+        "url": "https://www.amd.com/en/products/processors/desktops/ryzen/9000-series/amd-ryzen-9-9950x.html"
+      },
+      {
+        "name": "PassMark (CPU Mark)",
+        "url": "https://www.cpubenchmark.net/common_cpus.html"
+      }
+    ]
+  },
+  {
+    "id": "asus-dual-rtx5060-o8g",
+    "category": "gpu",
+    "name": "ASUS Dual GeForce RTX 5060 OC 8GB",
+    "brand": "ASUS",
+    "model": "DUAL-RTX5060-O8G",
+    "imageUrl": "https://dlcdnwebimgs.asus.com/gain/35710ce7-7a2b-42ab-aa48-63c448e6c047//w184",
+    "verifiedOn": "2026-10-15",
+    "specifications": {
+      "chip": "NVIDIA GeForce RTX 5060",
+      "memoryGb": 8,
+      "memoryType": "GDDR7",
+      "interface": "PCI Express 5.0",
+      "memoryBusBits": 128,
+      "memorySpeedGbps": 28
+    },
+    "sources": [
+      {
+        "name": "ASUS",
+        "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rtx5060-o8g/techspec/"
+      }
+    ]
+  },
+  {
+    "id": "asus-dual-rx7600-o8g",
+    "category": "gpu",
+    "name": "ASUS Dual Radeon RX 7600 OC 8GB",
+    "brand": "ASUS",
+    "model": "DUAL-RX7600-O8G",
+    "imageUrl": "https://dlcdnwebimgs.asus.com/gain/662a0748-5841-4001-af31-ce4cc070b44a//w184",
+    "verifiedOn": "2026-10-15",
+    "specifications": {
+      "chip": "AMD Radeon RX 7600",
+      "memoryGb": 8,
+      "memoryType": "GDDR6",
+      "interface": "PCI Express 4.0",
+      "memoryBusBits": 128,
+      "memorySpeedGbps": 18
+    },
+    "sources": [
+      {
+        "name": "ASUS",
+        "url": "https://www.asus.com/motherboards-components/graphics-cards/dual/dual-rx7600-o8g/techspec/"
+      }
+    ]
+  },
+  {
+    "id": "kingston-kf560c36bbe2-16",
+    "category": "ram",
+    "name": "Kingston FURY Beast DDR5 16GB 6000 MT/s",
+    "brand": "Kingston",
+    "model": "KF560C36BBE2-16",
+    "imageUrl": "https://media.kingston.com/kingston/product/FURY_Beast_Black_DDR5_1-tn.png",
+    "verifiedOn": "2026-10-15",
+    "specifications": {
+      "capacityGb": 16,
+      "modules": 1,
+      "memoryType": "DDR5",
+      "speedMtps": 6000,
+      "defaultSpeedMtps": 4800,
+      "speedProfile": "AMD EXPO / Intel XMP",
+      "formFactor": "UDIMM",
+      "casLatency": 36
+    },
+    "sources": [
+      {
+        "name": "Kingston",
+        "url": "https://www.kingston.com/en/memory/search?partid=KF560C36BBE2-16"
+      },
+      {
+        "name": "Ficha técnica Kingston",
+        "url": "https://www.kingston.com/datasheets/KF560C36BBE2-16.pdf"
+      }
+    ]
+  },
+  {
+    "id": "kingston-kf432s20ib-16",
+    "category": "ram",
+    "name": "Kingston FURY Impact DDR4 16GB 3200 MT/s",
+    "brand": "Kingston",
+    "model": "KF432S20IB/16",
+    "imageUrl": "https://media.kingston.com/kingston/product/FURY_Impact_Black_DDR4_1R_1-tn.png",
+    "verifiedOn": "2026-10-15",
+    "specifications": {
+      "capacityGb": 16,
+      "modules": 1,
+      "memoryType": "DDR4",
+      "speedMtps": 3200,
+      "defaultSpeedMtps": 3200,
+      "speedProfile": "Plug and Play / Intel XMP",
+      "formFactor": "SODIMM",
+      "casLatency": 20
+    },
+    "sources": [
+      {
+        "name": "Kingston",
+        "url": "https://www.kingston.com/en/memory/search?partId=KF432S20IB%2F16"
+      },
+      {
+        "name": "Ficha técnica Kingston",
+        "url": "https://www.kingston.com/datasheets/KF432S20IB_16.pdf"
+      }
+    ]
+  }
+]

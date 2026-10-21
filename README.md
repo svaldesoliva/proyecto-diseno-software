@@ -2,7 +2,7 @@
 Temática 4B: Comparador de precios computadores
 
 Frontend y backend usan TypeScript. El contrato de CPU, GPU y RAM se comparte en
-`shared/products.ts`; los datos del catálogo siguen en `backend/data.json`.
+`shared/products.ts`, los datos del catálogo están en `backend/data.json`.
 
 El inicio muestra nombre, imagen y el menor precio en CLP de las ofertas con stock.
 Cada tarjeta abre una vista con las especificaciones y las fuentes del producto
@@ -45,3 +45,34 @@ de Vite envía las consultas `/api` al backend en `http://localhost:8000`.
 - Backend: `deno test`, `deno task check` y `deno lint` desde `backend`.
 - Frontend: `npm test`, `npm run typecheck`, `npm run lint` y `npm run build` desde `frontend`.
 - `npm run build` comprueba los tipos antes de generar la página.
+
+## API
+
+- `GET /api/products`: catálogo completo.
+- `GET /api/products/category/cpu`: procesadores.
+- `GET /api/products/category/gpu`: tarjetas gráficas.
+- `GET /api/products/category/ram`: memorias RAM.
+
+Las rutas o categorías inexistentes devuelven `404`. Las rutas de productos solo aceptan `GET`.
+
+### Filtros combinables
+
+Se pueden agregar parámetros tanto a `/api/products` como a las rutas por categoría:
+
+- `id=intel-core-i9-14900k`: ID exacto.
+- `name=ryzen`: parte del nombre, sin distinguir mayúsculas.
+- `category=gpu`: categoría (`cpu`, `gpu` o `ram`).
+- `<campo>_gt=<número>`: especificación numérica estrictamente mayor al valor indicado.
+
+Ejemplos:
+
+```text
+/api/products?id=intel-core-i9-14900k
+/api/products?name=ryzen
+/api/products?category=ram&capacityGb_gt=8
+/api/products?category=cpu&cores_gt=16
+/api/products/category/gpu?name=geforce&memoryGb_gt=4
+```
+
+Los filtros sin coincidencias devuelven `200` con `[]`. Los parámetros desconocidos,
+valores vacíos, categorías inválidas o números no finitos devuelven `400`.

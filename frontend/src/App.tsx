@@ -1,19 +1,15 @@
 import { useEffect, useState } from 'react'
-import type { Product, ProductCategory } from '../../shared/products.ts'
+import type { Product } from '../../shared/products.ts'
 import { getProducts } from './api/products.ts'
-import ProductSection from './components/ProductSection.tsx'
+import HomePage from './pages/HomePage.tsx'
+import ProductDetailPage from './pages/ProductDetailPage.tsx'
 import './App.css'
-
-const categories: { category: ProductCategory; title: string }[] = [
-  { category: 'cpu', title: 'Procesadores (CPU)' },
-  { category: 'gpu', title: 'Tarjetas gráficas (GPU)' },
-  { category: 'ram', title: 'Memorias RAM' },
-]
 
 export default function App() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const productId = new URLSearchParams(window.location.search).get('product')
 
   useEffect(() => {
     const controller = new AbortController()
@@ -32,24 +28,23 @@ export default function App() {
     return () => controller.abort()
   }, [])
 
-  return (
-    <main>
-      <header className="page-header">
-        <h1>Catálogo de componentes</h1>
-        <p>Especificaciones de procesadores, tarjetas gráficas y memorias RAM.</p>
-      </header>
+  if (loading) return <main><p role="status">Cargando componentes…</p></main>
+  if (error) return <main><p role="alert">{error}</p></main>
 
-      {loading && <p role="status">Cargando componentes…</p>}
-      {error && <p role="alert">{error}</p>}
-      {!loading && !error && products.length === 0 && <p>No hay componentes disponibles.</p>}
-      {!loading && !error && products.length > 0 && categories.map(({ category, title }) => (
-        <ProductSection
-          key={category}
-          category={category}
-          title={title}
-          products={products.filter((product) => product.category === category)}
-        />
-      ))}
-    </main>
-  )
+  if (productId) {
+    const product = products.find((product) => product.id === productId)
+
+    if (!product) {
+      return (
+        <main>
+          <h1>Componente no encontrado</h1>
+          <a href="/">Volver al catálogo</a>
+        </main>
+      )
+    }
+
+    return <main><ProductDetailPage product={product} /></main>
+  }
+
+  return <main><HomePage products={products} /></main>
 }

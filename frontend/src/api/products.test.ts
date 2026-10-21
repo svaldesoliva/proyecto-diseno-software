@@ -15,6 +15,7 @@ test('getProducts requests the catalog and forwards its abort signal', async () 
     imageUrl: null,
     verifiedOn: '2026-10-21',
     sources: [{ name: 'Test source', url: 'https://example.com/ram' }],
+    offers: [],
     specifications: {
       capacityGb: 16,
       modules: 1,

@@ -22,6 +22,7 @@ Deno.test("GET /api/products returns two products per category", async () => {
   }
 
   for (const product of products) {
+    assertEquals(Array.isArray(product.offers), true);
     assertEquals(product.sources.length > 0, true);
     assertEquals(Object.keys(product.specifications).length > 0, true);
     for (const source of product.sources) {

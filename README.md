@@ -4,6 +4,14 @@ Temática 4B: Comparador de precios computadores
 Frontend y backend usan TypeScript. El contrato de CPU, GPU y RAM se comparte en
 `shared/products.ts`; los datos del catálogo siguen en `backend/data.json`.
 
+El inicio muestra nombre, imagen y el menor precio en CLP de las ofertas con stock.
+Cada tarjeta abre una vista con las especificaciones y las fuentes del producto
+mediante `/?product=<id>`. Se puede recargar o compartir ese enlace.
+
+Las ofertas se guardan en `offers` con `store`, `priceClp`, `url` e `inStock`.
+El catálogo todavía no tiene ofertas reales: muestra “Precio no disponible” hasta
+que se integren las tiendas. No se consideran precios vacíos, cero o negativos.
+
 Funcionalidades:
 - CPU: Imagen, Marca, Serie (i9, Ryzen 9, etc), Número de procesador (ej: 14900K, 9950x, etc ), Precio en Página, Página vendedora, Cantidad Núcleos, Cantidad Hilos, Frecuencia Máxima, Caché, Potencia base (W), Potencia máxima (W), Socket, Arquitectura, Familia, Tamaño de memoria máximo (GB), Tipos de memoria aceptados (DDR5, DDR4, etc), Fecha de lanzamiento, CPU Mark Score.
 - RAM: Imagen, Marca, Capacidad (GB), Frecuencia (MHz), Estándar (DDR5, DDR4, etc.), Formato (UDIMM / SODIMM)

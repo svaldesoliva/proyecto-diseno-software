@@ -7,6 +7,7 @@
     "model": "i9-14900K",
     "imageUrl": "https://api.solotodo.com/products/222080/picture/?width=400&height=400",
     "verifiedOn": "2026-10-15",
+    "offers": [],
     "specifications": {
       "series": "Core i9",
       "family": "Intel Core (14th Gen)",
@@ -46,6 +47,7 @@
     "model": "9950X",
     "imageUrl": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-9-9950x.jpg",
     "verifiedOn": "2026-10-15",
+    "offers": [],
     "specifications": {
       "series": "Ryzen 9",
       "family": "Ryzen 9000 Series",
@@ -85,6 +87,7 @@
     "model": "DUAL-RTX5060-O8G",
     "imageUrl": "https://dlcdnwebimgs.asus.com/gain/35710ce7-7a2b-42ab-aa48-63c448e6c047//w184",
     "verifiedOn": "2026-10-15",
+    "offers": [],
     "specifications": {
       "chip": "NVIDIA GeForce RTX 5060",
       "memoryGb": 8,
@@ -108,6 +111,7 @@
     "model": "DUAL-RX7600-O8G",
     "imageUrl": "https://dlcdnwebimgs.asus.com/gain/662a0748-5841-4001-af31-ce4cc070b44a//w184",
     "verifiedOn": "2026-10-15",
+    "offers": [],
     "specifications": {
       "chip": "AMD Radeon RX 7600",
       "memoryGb": 8,
@@ -131,6 +135,7 @@
     "model": "KF560C36BBE2-16",
     "imageUrl": "https://media.kingston.com/kingston/product/FURY_Beast_Black_DDR5_1-tn.png",
     "verifiedOn": "2026-10-15",
+    "offers": [],
     "specifications": {
       "capacityGb": 16,
       "modules": 1,
@@ -160,6 +165,7 @@
     "model": "KF432S20IB/16",
     "imageUrl": "https://media.kingston.com/kingston/product/FURY_Impact_Black_DDR4_1R_1-tn.png",
     "verifiedOn": "2026-10-15",
+    "offers": [],
     "specifications": {
       "capacityGb": 16,
       "modules": 1,

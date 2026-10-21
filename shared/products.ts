@@ -3,6 +3,13 @@ interface ProductSource {
   url: string;
 }
 
+export interface ProductOffer {
+  store: string;
+  priceClp: number;
+  url: string;
+  inStock: boolean;
+}
+
 interface ProductBase {
   id: string;
   name: string;
@@ -11,6 +18,7 @@ interface ProductBase {
   imageUrl: string | null;
   verifiedOn: string;
   sources: ProductSource[];
+  offers: ProductOffer[];
 }
 
 interface CpuSpecifications {

@@ -1,6 +1,6 @@
 import type { Product } from '../../../shared/products.ts'
 import ProductImage from '../components/ProductImage.tsx'
-import ProductPrice from '../components/ProductPrice.tsx'
+import ProductOffers from '../components/ProductOffers.tsx'
 import ProductSpecifications from '../components/ProductSpecifications.tsx'
 
 export default function ProductDetailPage({ product }: { product: Product }) {
@@ -14,7 +14,7 @@ export default function ProductDetailPage({ product }: { product: Product }) {
       <article className="product-detail">
         <div>
           <ProductImage product={product} />
-          <ProductPrice offers={product.offers} />
+          <ProductOffers offers={product.offers} />
         </div>
         <div>
           <h2>Especificaciones</h2>

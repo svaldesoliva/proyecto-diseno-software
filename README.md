@@ -9,8 +9,9 @@ Cada tarjeta abre una vista con las especificaciones y las fuentes del producto
 mediante `/?product=<id>`. Se puede recargar o compartir ese enlace.
 
 Las ofertas se guardan en `offers` con `store`, `priceClp`, `url` e `inStock`.
-El catálogo todavía no tiene ofertas reales: muestra “Precio no disponible” hasta
-que se integren las tiendas. No se consideran precios vacíos, cero o negativos.
+Las ofertas de PC Factory se pueden consultar y guardar con los comandos de
+[`backend/scrapers`](backend/scrapers/README.md). Se muestra “Precio no disponible”
+si no hay ofertas con stock. No se consideran precios vacíos, cero o negativos.
 
 Funcionalidades:
 - CPU: Imagen, Marca, Serie (i9, Ryzen 9, etc), Número de procesador (ej: 14900K, 9950x, etc ), Precio en Página, Página vendedora, Cantidad Núcleos, Cantidad Hilos, Frecuencia Máxima, Caché, Potencia base (W), Potencia máxima (W), Socket, Arquitectura, Familia, Tamaño de memoria máximo (GB), Tipos de memoria aceptados (DDR5, DDR4, etc), Fecha de lanzamiento, CPU Mark Score.

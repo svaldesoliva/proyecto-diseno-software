@@ -1,7 +1,7 @@
 import type { Product } from "../shared/products.ts";
 import data from "./data.json" with { type: "json" };
 
-// shortcut: local JSON is trusted, validate external records when scrapers are added.
+// shortcut: local product specs are curated, validate them if importing specs automatically.
 const products = data as Product[];
 const numericFields = new Set(
   products.flatMap((product) =>

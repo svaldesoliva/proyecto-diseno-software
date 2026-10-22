@@ -47,7 +47,14 @@
     "model": "9950X",
     "imageUrl": "https://www.amd.com/content/dam/amd/en/images/products/processors/ryzen/2613900-ryzen-9-9950x.jpg",
     "verifiedOn": "2026-10-15",
-    "offers": [],
+    "offers": [
+      {
+        "store": "PC Factory",
+        "priceClp": 699990,
+        "url": "https://www.pcfactory.cl/producto/53190-amd-cpu-amd-ryzen-9-9950x-am5",
+        "inStock": true
+      }
+    ],
     "specifications": {
       "series": "Ryzen 9",
       "family": "Ryzen 9000 Series",
@@ -76,6 +83,57 @@
       {
         "name": "PassMark (CPU Mark)",
         "url": "https://www.cpubenchmark.net/common_cpus.html"
+      }
+    ]
+  },
+  {
+    "id": "amd-ryzen-5-5500",
+    "category": "cpu",
+    "name": "AMD Ryzen 5 5500",
+    "brand": "AMD",
+    "model": "5500",
+    "imageUrl": "https://assets.pcfactory.cl/public/foto/46284/1_500.jpg",
+    "verifiedOn": "2026-10-21",
+    "offers": [
+      {
+        "store": "PC Factory",
+        "priceClp": 124990,
+        "url": "https://www.pcfactory.cl/producto/46284-amd-cpu-amd-ryzen-5-5500-am4",
+        "inStock": true
+      }
+    ],
+    "specifications": {
+      "series": "Ryzen 5",
+      "family": "Ryzen 5000 Series",
+      "architecture": "Zen 3",
+      "cores": 6,
+      "threads": 12,
+      "maxFrequencyGhz": 4.2,
+      "l2CacheMb": 3,
+      "l3CacheMb": 16,
+      "basePowerW": null,
+      "maxPowerW": null,
+      "tdpW": 65,
+      "socket": "AM4",
+      "maxMemoryGb": 128,
+      "memoryTypes": [
+        "DDR4"
+      ],
+      "launchDate": "2022-04-04",
+      "cpuMarkScore": 19250
+    },
+    "sources": [
+      {
+        "name": "AMD",
+        "url": "https://www.amd.com/en/support/downloads/drivers.html/processors/ryzen/ryzen-5000-series/amd-ryzen-5-5500.html"
+      },
+      {
+        "name": "PassMark (CPU Mark)",
+        "url": "https://www.cpubenchmark.net/cpu.php?cpu=AMD+Ryzen+5+5500&id=4807"
+      },
+      {
+        "name": "PC Factory",
+        "url": "https://www.pcfactory.cl/producto/46284-amd-cpu-amd-ryzen-5-5500-am4"
       }
     ]
   },

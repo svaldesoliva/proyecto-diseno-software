@@ -2,22 +2,22 @@ import { assertEquals } from "@std/assert";
 import type { Product } from "../shared/products.ts";
 import { handler } from "./main.ts";
 
-Deno.test("GET /api/products returns two products per category", async () => {
+Deno.test("GET /api/products returns the catalog including the PC Factory CPU", async () => {
   const response = handler(new Request("http://localhost/api/products"));
   const products: Product[] = await response.json();
 
   assertEquals(response.status, 200);
   assertEquals(response.headers.get("content-type"), "application/json");
-  assertEquals(products.length, 6);
+  assertEquals(products.length, 7);
   assertEquals(
     new Set(products.map((product) => product.id)).size,
-    6,
+    7,
   );
 
   for (const category of ["cpu", "gpu", "ram"]) {
     assertEquals(
       products.filter((product) => product.category === category).length,
-      2,
+      category === "cpu" ? 3 : 2,
     );
   }
 
@@ -67,7 +67,7 @@ for (const category of ["cpu", "gpu", "ram"]) {
     const products: Product[] = await response.json();
 
     assertEquals(response.status, 200);
-    assertEquals(products.length, 2);
+    assertEquals(products.length, category === "cpu" ? 3 : 2);
     assertEquals(
       products.every((product) => product.category === category),
       true,
@@ -79,7 +79,7 @@ Deno.test("ID is exact and name supports partial case-insensitive matches", asyn
   const cases: [string, string[]][] = [
     ["id=intel-core-i9-14900k", ["intel-core-i9-14900k"]],
     ["id=intel", []],
-    ["name=RyZeN", ["amd-ryzen-9-9950x"]],
+    ["name=RyZeN", ["amd-ryzen-9-9950x", "amd-ryzen-5-5500"]],
     ["name=%20CORE%20i9%20", ["intel-core-i9-14900k"]],
   ];
 

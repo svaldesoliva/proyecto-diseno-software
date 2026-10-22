@@ -1,7 +1,9 @@
 {
   "tasks": {
     "dev": "deno run --watch --allow-net main.ts",
-    "check": "deno check main.ts main_test.ts ../shared/products.ts"
+    "check": "deno check main.ts main_test.ts ../shared/products.ts scrapers/*.ts",
+    "scrape:pcfactory": "deno run --allow-net=api.pcfactory.cl scrapers/pcfactory.ts",
+    "import:pcfactory": "deno run --allow-net=api.pcfactory.cl --allow-read=. --allow-write=. scrapers/import-pcfactory.ts"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1"

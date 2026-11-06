@@ -1,6 +1,7 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertRejects } from "@std/assert";
 import type { Product } from "../shared/products.ts";
 import { handler } from "./main.ts";
+import { loadPcFactoryCatalog } from "./scrapers/catalog-pcfactory.ts";
 
 Deno.test("GET /api/products returns the catalog including the PC Factory CPU", async () => {
   const response = handler(new Request("http://localhost/api/products"));
@@ -28,6 +29,83 @@ Deno.test("GET /api/products returns the catalog including the PC Factory CPU", 
     for (const source of product.sources) {
       assertEquals(new URL(source.url).protocol, "https:");
     }
+  }
+});
+
+Deno.test("PC Factory refresh serves all published pages and merges offers into curated products", async () => {
+  const originalFetch = globalThis.fetch;
+  const cpu = {
+    id: 46284,
+    slug: "46284-amd-cpu-amd-ryzen-5-5500-am4",
+    nombre: "Ryzen 5 5500",
+    marca: "AMD",
+    precio: { efectivo: 113990 },
+  };
+  const gpu = {
+    ...cpu,
+    id: 4,
+    slug: "4-gpu",
+    nombre: "Test GPU",
+    precio: null,
+  };
+  const secondCpu = { ...cpu, id: 5, slug: "5-cpu", nombre: "Test CPU" };
+  let repeatFirstPage = false;
+  globalThis.fetch = (input) => {
+    const query = new URL(String(input)).searchParams;
+    const pageNumber = Number(query.get("page"));
+    const online = query.get("sucursales") === "11,3000";
+    const items = query.get("categorias") === "272"
+      ? online ? [cpu] : [cpu, secondCpu]
+      : query.get("categorias") === "334" && !online
+      ? [gpu]
+      : [];
+    return Promise.resolve(Response.json({
+      content: {
+        items: items.slice(
+          repeatFirstPage ? 0 : pageNumber,
+          repeatFirstPage ? 1 : pageNumber + 1,
+        ),
+        pageable: {
+          pageNumber,
+          totalPages: items.length,
+          totalElements: items.length,
+        },
+      },
+    }));
+  };
+
+  const request = new Request("http://localhost/api/products");
+  const curated: Product[] = await handler(request).json();
+  try {
+    const updated = await loadPcFactoryCatalog(curated);
+    const products: Product[] = await handler(request, updated).json();
+    const original = curated.find((item) => item.id === "amd-ryzen-5-5500");
+    assertEquals(products.find((item) => item.id === original?.id), {
+      ...original,
+      offers: [{
+        store: "PC Factory",
+        url: `https://www.pcfactory.cl/producto/${cpu.slug}`,
+        priceClp: 113990,
+        inStock: true,
+      }],
+    });
+    assertEquals(
+      products.filter((item) => item.id.startsWith("pcfactory-"))
+        .map((item) => [item.id, item.category, item.offers[0]?.inStock]),
+      [
+        ["pcfactory-5", "cpu", false],
+        ["pcfactory-4", "gpu", undefined],
+      ],
+    );
+
+    repeatFirstPage = true;
+    await assertRejects(
+      () => loadPcFactoryCatalog(curated),
+      Error,
+      "Incomplete",
+    );
+  } finally {
+    globalThis.fetch = originalFetch;
   }
 });
 

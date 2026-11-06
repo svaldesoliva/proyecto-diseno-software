@@ -1,4 +1,4 @@
-import { assertEquals, assertThrows } from "@std/assert";
+import { assertEquals, assertExists, assertThrows } from "@std/assert";
 import type { Product, ProductOffer } from "../../shared/products.ts";
 import data from "../data.json" with { type: "json" };
 import { toPcFactoryOffer, updatePcFactoryOffer } from "./import-pcfactory.ts";
@@ -10,8 +10,8 @@ const result = {
     id: 46284,
     disponibilidad: [{
       sucursales: [
-        { nombre: "Internet", aproximado: "0", cerrada: false },
-        { nombre: "Manuel Montt", aproximado: "9", cerrada: false },
+        { id: 11, nombre: "Internet", aproximado: "0", cerrada: false },
+        { id: 8, nombre: "Manuel Montt", aproximado: "9", cerrada: false },
       ],
     }],
   },
@@ -30,6 +30,19 @@ Deno.test("PC Factory uses the cash price and Internet stock only", () => {
   assertEquals(toPcFactoryOffer(46284, available).inStock, true);
   available.stock.disponibilidad[0].sucursales[0].cerrada = true;
   assertEquals(toPcFactoryOffer(46284, available).inStock, false);
+});
+
+Deno.test("PC Factory identifies Internet stock by branch ID and prefers branch 3000", () => {
+  const available = structuredClone(result);
+  const branches = available.stock.disponibilidad[0].sucursales;
+  branches[0].nombre = "Despacho web";
+  branches[0].aproximado = "5";
+  assertEquals(toPcFactoryOffer(46284, available).inStock, true);
+
+  branches.push({ id: 3000, nombre: "CD", aproximado: "-2", cerrada: false });
+  assertEquals(toPcFactoryOffer(46284, available).inStock, false);
+  branches[2].aproximado = "+30";
+  assertEquals(toPcFactoryOffer(46284, available).inStock, true);
 });
 
 Deno.test("PC Factory refuses invalid prices instead of overwriting an offer", () => {
@@ -79,7 +92,18 @@ Deno.test("PC Factory refuses unknown or malformed Internet stock", () => {
     {
       id: 46284,
       disponibilidad: [{
-        sucursales: [{ nombre: "Internet", aproximado: "unknown" }],
+        sucursales: [{ id: 11, aproximado: "unknown", cerrada: false }],
+      }],
+    },
+    {
+      id: 46284,
+      disponibilidad: [{
+        sucursales: [{
+          id: 8,
+          nombre: "Internet",
+          aproximado: "5",
+          cerrada: false,
+        }],
       }],
     },
   ];
@@ -111,6 +135,33 @@ Deno.test("PC Factory updates one mapped product without duplicates or losing ot
   );
   assertEquals(updatePcFactoryOffer(updated, offer), updated);
   assertEquals(products, original);
+});
+
+Deno.test("PC Factory can refresh an existing offer whose URL is absent from sources", () => {
+  const products = data as Product[];
+  const cpu = products.find((product) => product.id === "amd-ryzen-9-9950x");
+  assertExists(cpu);
+  const offer = { ...cpu.offers[0], priceClp: 600000 };
+  assertEquals(
+    updatePcFactoryOffer(products, offer).find((product) =>
+      product.id === cpu.id
+    )
+      ?.offers,
+    [offer],
+  );
+  assertThrows(
+    () =>
+      updatePcFactoryOffer([
+        ...products,
+        {
+          ...cpu,
+          sources: [{ name: offer.store, url: offer.url }],
+          offers: [],
+        },
+      ], offer),
+    Error,
+    "exactly one",
+  );
 });
 
 Deno.test("PC Factory refuses missing or ambiguous catalog mappings", () => {

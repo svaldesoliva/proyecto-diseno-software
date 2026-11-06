@@ -1,4 +1,21 @@
-## Consultar PC Factory
+## Catálogo automático
+
+Al ejecutar `deno task dev` desde `backend`, el servidor consulta todas las
+páginas de CPU (`272`), GPU (`334`) y RAM (`264`) publicadas por PC Factory.
+Un segundo listado con las sucursales `11,3000` indica qué ofertas tienen stock
+online. Las publicaciones agotadas también aparecen en el catálogo.
+
+El servidor actualiza el catálogo en memoria cada 30 minutos. Si una consulta
+falla, conserva el último resultado completo. Si falla al arrancar, usa
+`data.json` mientras espera el siguiente intento.
+
+Las fichas manuales se enlazan por el ID de PC Factory que figura en una URL
+de `sources` o `offers`. Así conservan su ID, sus especificaciones y las ofertas
+de otras tiendas. Las publicaciones nuevas usan un ID `pcfactory-<id>` y muestran
+los datos del listado. Sus especificaciones se pueden incorporar en una ficha
+manual enlazada por URL.
+
+## Consultar un producto de PC Factory
 
 Desde `backend`, ejecutar:
 
@@ -23,8 +40,8 @@ deno task import:pcfactory 46284
 ```
 
 El comando valida las respuestas y guarda el precio en efectivo en `offers` del
-producto que tenga la URL de PC Factory en `sources`. Por ejemplo, el Ryzen 5 5500
-ya está asociado mediante:
+producto que tenga la URL de PC Factory en `sources` o en una oferta de PC
+Factory ya guardada. Por ejemplo, el Ryzen 5 5500 ya está asociado mediante:
 
 ```json
 {
@@ -35,7 +52,8 @@ ya está asociado mediante:
 
 Si se ejecuta otra vez, actualiza la oferta de PC Factory; conserva las otras
 tiendas, las especificaciones y el resto del catálogo. `inStock` corresponde a
-la sucursal Internet: el stock de tiendas físicas no habilita esta oferta online.
+la sucursal Internet (ID 3000 si está presente, ID 11 en su defecto). Una
+sucursal cerrada o una cantidad menor o igual a cero se guarda como sin stock.
 Por eso un precio guardado puede seguir mostrándose como “Precio no disponible”
 si no hay stock en Internet.
 

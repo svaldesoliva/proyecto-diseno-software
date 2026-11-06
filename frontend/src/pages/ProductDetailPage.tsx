@@ -9,7 +9,7 @@ export default function ProductDetailPage({ product }: { product: Product }) {
       <header className="page-header">
         <a href="/">← Volver al catálogo</a>
         <h1>{product.name}</h1>
-        <p>{product.brand} · {product.model}</p>
+        <p>{product.model ? `${product.brand} · ${product.model}` : product.brand}</p>
       </header>
       <article className="product-detail">
         <div>

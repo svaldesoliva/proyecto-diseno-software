@@ -1,14 +1,7 @@
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Product, ProductOffer } from "../../shared/products.ts";
-import { getPcFactoryProduct } from "./pcfactory.ts";
-
-function record(value: unknown): Record<string, unknown> {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    throw new Error("Unexpected PC Factory response");
-  }
-  return value as Record<string, unknown>;
-}
+import { getPcFactoryProduct, productUrl, record } from "./pcfactory.ts";
 
 export function toPcFactoryOffer(
   productId: number,
@@ -30,13 +23,7 @@ export function toPcFactoryOffer(
   ) {
     throw new Error("PC Factory did not return a valid cash price");
   }
-  if (
-    typeof product.slug !== "string" ||
-    !/^\d+-[a-z0-9-]+$/.test(product.slug) ||
-    !product.slug.startsWith(`${productId}-`)
-  ) {
-    throw new Error("PC Factory did not return a valid product URL");
-  }
+  const url = productUrl(productId, product.slug);
 
   if (!Array.isArray(stock.disponibilidad)) {
     throw new Error("PC Factory did not return branch stock");
@@ -48,10 +35,12 @@ export function toPcFactoryOffer(
     }
     return branches.map(record);
   });
-  const internet = branches.find((branch) => branch.nombre === "Internet");
+  // La ficha de PC Factory prioriza la sucursal 3000 para el stock de Internet.
+  const internet = branches.find((branch) => branch.id === 3000) ??
+    branches.find((branch) => branch.id === 11);
   if (
     !internet || typeof internet.aproximado !== "string" ||
-    !/^\+?\d+$/.test(internet.aproximado) ||
+    !/^[+-]?\d+$/.test(internet.aproximado) ||
     typeof internet.cerrada !== "boolean"
   ) {
     throw new Error("PC Factory did not return valid Internet stock");
@@ -60,7 +49,7 @@ export function toPcFactoryOffer(
   return {
     store: "PC Factory",
     priceClp,
-    url: `https://www.pcfactory.cl/producto/${product.slug}`,
+    url,
     inStock: !internet.cerrada && Number(internet.aproximado) > 0,
   };
 }
@@ -70,11 +59,14 @@ export function updatePcFactoryOffer(
   offer: ProductOffer,
 ): Product[] {
   const matches = products.filter((product) =>
-    product.sources.some((source) => source.url === offer.url)
+    product.sources.some((source) => source.url === offer.url) ||
+    product.offers.some((item) =>
+      item.store === offer.store && item.url === offer.url
+    )
   );
   if (matches.length !== 1) {
     throw new Error(
-      "Add the PC Factory URL to sources of exactly one catalog product first",
+      "The PC Factory URL must match exactly one catalog product in sources or offers",
     );
   }
 

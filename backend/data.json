@@ -36,6 +36,10 @@
       {
         "name": "PassMark (CPU Mark)",
         "url": "https://www.cpubenchmark.net/common_cpus.html"
+      },
+      {
+        "name": "PC Factory",
+        "url": "https://www.pcfactory.cl/producto/50509-intel-cpu-intel-core-i9-14900k-s1700"
       }
     ]
   },
@@ -212,6 +216,10 @@
       {
         "name": "Ficha técnica Kingston",
         "url": "https://www.kingston.com/datasheets/KF560C36BBE2-16.pdf"
+      },
+      {
+        "name": "PC Factory",
+        "url": "https://www.pcfactory.cl/producto/54617-kingston-fury-memoria-ram-ddr5-16gb-6000mhz-beast"
       }
     ]
   },

@@ -2,7 +2,8 @@
 Temática 4B: Comparador de precios computadores
 
 Frontend y backend usan TypeScript. El contrato de CPU, GPU y RAM se comparte en
-`shared/products.ts`, los datos del catálogo están en `backend/data.json`.
+`shared/products.ts`. El backend combina las fichas de `backend/data.json` con
+las publicaciones de CPU, GPU y RAM de PC Factory al arrancar y cada 30 minutos.
 
 El inicio muestra nombre, imagen y el menor precio en CLP de las ofertas con stock.
 Cada tarjeta abre una vista con las especificaciones y las fuentes del producto

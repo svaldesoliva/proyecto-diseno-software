@@ -33,6 +33,8 @@ const labels: Record<string, string> = {
 }
 
 export default function ProductSpecifications({ specifications }: { specifications: Specifications }) {
+  if (Object.keys(specifications).length === 0) return <p>No hay especificaciones registradas.</p>
+
   return (
     <dl className="product-specifications">
       {Object.entries(specifications).map(([key, value]) => (

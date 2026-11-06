@@ -14,7 +14,7 @@ interface ProductBase {
   id: string;
   name: string;
   brand: string;
-  model: string;
+  model: string | null;
   imageUrl: string | null;
   verifiedOn: string;
   sources: ProductSource[];
@@ -63,9 +63,9 @@ interface RamSpecifications {
 export type Product =
   & ProductBase
   & (
-    | { category: "cpu"; specifications: CpuSpecifications }
-    | { category: "gpu"; specifications: GpuSpecifications }
-    | { category: "ram"; specifications: RamSpecifications }
+    | { category: "cpu"; specifications: Partial<CpuSpecifications> }
+    | { category: "gpu"; specifications: Partial<GpuSpecifications> }
+    | { category: "ram"; specifications: Partial<RamSpecifications> }
   );
 
 export type ProductCategory = Product["category"];

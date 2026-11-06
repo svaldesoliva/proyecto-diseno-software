@@ -1,17 +1,17 @@
 import type { Product } from "../shared/products.ts";
 import data from "./data.json" with { type: "json" };
+import { loadPcFactoryCatalog } from "./scrapers/catalog-pcfactory.ts";
 
-// shortcut: local product specs are curated, validate them if importing specs automatically.
-const products = data as Product[];
+const curatedProducts = data as Product[];
 const numericFields = new Set(
-  products.flatMap((product) =>
+  curatedProducts.flatMap((product) =>
     Object.entries(product.specifications)
       .filter(([, value]) => typeof value === "number" || value === null)
       .map(([field]) => field)
   ),
 );
 
-export function handler(req: Request): Response {
+export function handler(req: Request, products = curatedProducts): Response {
   const url = new URL(req.url);
   const category = url.pathname.match(
     /^\/api\/products\/category\/(cpu|gpu|ram)$/,
@@ -77,5 +77,20 @@ export function handler(req: Request): Response {
 }
 
 if (import.meta.main) {
-  Deno.serve(handler);
+  let products = curatedProducts;
+  const refresh = async () => {
+    try {
+      products = await loadPcFactoryCatalog(curatedProducts);
+      console.log(`Catalog refreshed (${products.length} products)`);
+    } catch (error) {
+      console.error(
+        "PC Factory refresh failed. Serving previous catalog.",
+        error,
+      );
+    }
+    Deno.unrefTimer(setTimeout(refresh, 30 * 60_000));
+  };
+
+  await refresh();
+  Deno.serve((req) => handler(req, products));
 }

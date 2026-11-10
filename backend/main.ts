@@ -1,6 +1,11 @@
 import type { Product } from "../shared/products.ts";
 import data from "./data.json" with { type: "json" };
 import { loadPcFactoryCatalog } from "./scrapers/catalog-pcfactory.ts";
+import {
+  type CpuDetails,
+  loadCpuDetails,
+  mergeCpuDetails,
+} from "./scrapers/cpu-database.ts";
 
 const curatedProducts = data as Product[];
 const numericFields = new Set(
@@ -77,16 +82,34 @@ export function handler(req: Request, products = curatedProducts): Response {
 }
 
 if (import.meta.main) {
+  let catalog = curatedProducts;
   let products = curatedProducts;
+  const cpuDetails = new Map<string, CpuDetails>();
+  let cpuRefresh: Promise<void> | undefined;
+  let cpuRetryAt = 0;
   const refresh = async () => {
     try {
-      products = await loadPcFactoryCatalog(curatedProducts);
-      console.log(`Catalog refreshed (${products.length} products)`);
+      catalog = await loadPcFactoryCatalog(curatedProducts);
+      console.log(`Catalog refreshed (${catalog.length} products)`);
     } catch (error) {
       console.error(
         "PC Factory refresh failed. Serving previous catalog.",
         error,
       );
+    }
+    products = mergeCpuDetails(catalog, cpuDetails);
+    if (!cpuRefresh && Date.now() >= cpuRetryAt) {
+      cpuRefresh = loadCpuDetails(catalog, cpuDetails).then((retryAt) => {
+        cpuRetryAt = retryAt ?? 0;
+        if (retryAt) {
+          console.warn("CPU-Monkey rate limited the refresh (HTTP 429).");
+        }
+        products = mergeCpuDetails(catalog, cpuDetails);
+      }).catch((error) => {
+        console.error("CPU specifications refresh failed.", error);
+      }).finally(() => {
+        cpuRefresh = undefined;
+      });
     }
     Deno.unrefTimer(setTimeout(refresh, 30 * 60_000));
   };

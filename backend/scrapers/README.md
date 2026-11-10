@@ -15,6 +15,25 @@ de otras tiendas. Las publicaciones nuevas usan un ID `pcfactory-<id>` y muestra
 los datos del listado. Sus especificaciones se pueden incorporar en una ficha
 manual enlazada por URL.
 
+## Especificaciones de CPU Intel y AMD
+
+El servidor consulta [CPU-Monkey](https://www.cpu-monkey.com/en/) en segundo
+plano y conserva en memoria las fichas encontradas. Los nombres de los anuncios
+sirven para identificar el modelo. El precio, el stock y el enlace de la oferta
+provienen de la tienda. Las fichas manuales tienen prioridad sobre los datos
+de CPU-Monkey. Un modelo sin coincidencia exacta conserva su oferta y puede
+mostrar una ficha sin especificaciones.
+
+El scraper consulta una ficha por vez y pausa el barrido si la fuente responde
+con HTTP 429. Los datos reunidos antes de la pausa se publican en el catálogo.
+
+Para consultar una ficha de forma independiente desde `backend`:
+
+```bash
+deno task scrape:cpu-specs "Intel Core i5-14400F"
+deno task scrape:cpu-specs "AMD Ryzen 5 5500"
+```
+
 ## Consultar un producto de PC Factory
 
 Desde `backend`, ejecutar:

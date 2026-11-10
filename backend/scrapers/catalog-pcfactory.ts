@@ -13,7 +13,7 @@ async function listCategory(categoryId: number, onlineOnly: boolean) {
     const url = new URL(`${productsUrl}/query`);
     url.searchParams.set("categorias", String(categoryId));
     url.searchParams.set("page", String(page));
-    url.searchParams.set("size", "24");
+    url.searchParams.set("size", "48");
     if (onlineOnly) url.searchParams.set("sucursales", "11,3000");
 
     const content = record(record(await fetchJson(url)).content);
@@ -68,7 +68,6 @@ export async function loadPcFactoryCatalog(
         ) {
           throw new Error(`Invalid PC Factory product metadata: ${url}`);
         }
-        const thumbnail = item.thumbnail;
         const priceClp = item.precio == null
           ? undefined
           : record(item.precio).efectivo;
@@ -79,10 +78,7 @@ export async function loadPcFactoryCatalog(
           model: null,
           category,
           specifications: {},
-          imageUrl: typeof thumbnail === "string" &&
-              /^\/public\/foto\/\d+\/[\w.-]+$/.test(thumbnail)
-            ? `https://assets.pcfactory.cl${thumbnail}`
-            : null,
+          imageUrl: null,
           verifiedOn,
           sources: [{ name: store, url }],
           offers:

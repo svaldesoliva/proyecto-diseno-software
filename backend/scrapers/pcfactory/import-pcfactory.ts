@@ -1,6 +1,6 @@
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Product, ProductOffer } from "../../shared/products.ts";
+import type { Product, ProductOffer } from "../../../shared/products.ts";
 import { getPcFactoryProduct, productUrl, record } from "./pcfactory.ts";
 
 export function toPcFactoryOffer(
@@ -90,7 +90,7 @@ if (import.meta.main) {
       productId,
       await getPcFactoryProduct(productId),
     );
-    const catalogFile = new URL("../data.json", import.meta.url);
+    const catalogFile = new URL("../../data.json", import.meta.url);
     const products = JSON.parse(await Deno.readTextFile(catalogFile));
     if (!Array.isArray(products)) {
       throw new Error("data.json must contain a product array");

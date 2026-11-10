@@ -1,4 +1,4 @@
-import type { Product } from "../../shared/products.ts";
+import type { Product } from "../../../shared/products.ts";
 import {
   fetchJson,
   productIdFromUrl,

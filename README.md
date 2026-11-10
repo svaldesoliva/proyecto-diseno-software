@@ -22,8 +22,7 @@ Funcionalidades:
 
 ## Ejecutar
 
-Requiere Deno 2 y Node.js 24. Las pruebas del frontend ejecutan TypeScript con el
-soporte nativo de Node, sin un runner adicional.
+Requiere Deno 2 y Node.js 24.
 
 Terminal 1 para backend:
 
@@ -44,8 +43,8 @@ de Vite envía las consultas `/api` al backend en `http://localhost:8000`.
 
 ## Verificar
 
-- Backend: `deno test`, `deno task check` y `deno lint` desde `backend`.
-- Frontend: `npm test`, `npm run typecheck`, `npm run lint` y `npm run build` desde `frontend`.
+- Desde `backend`, ejecuta `deno task check` y `deno lint`.
+- Desde `frontend`, ejecuta `npm run lint` y `npm run build`.
 - `npm run build` comprueba los tipos antes de generar la página.
 
 ## API

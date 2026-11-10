@@ -1,10 +1,10 @@
-import type { Product } from "../../shared/products.ts";
+import type { Product } from "../../../shared/products.ts";
 import {
   fetchJson,
   productIdFromUrl,
   productsUrl,
   record,
-} from "./pcfactory.ts";
+} from "../pcfactory/pcfactory.ts";
 
 type Gpu = Extract<Product, { category: "gpu" }>;
 type Ram = Extract<Product, { category: "ram" }>;

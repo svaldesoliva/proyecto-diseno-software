@@ -1,5 +1,5 @@
 import { DomUtils, parseDocument } from "htmlparser2";
-import type { Product } from "../../shared/products.ts";
+import type { Product } from "../../../shared/products.ts";
 
 type Cpu = Extract<Product, { category: "cpu" }>;
 export type CpuDetails =

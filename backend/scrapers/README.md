@@ -1,3 +1,9 @@
+Los scrapers se organizan por fuente.
+
+- [PC Factory](pcfactory/) aporta el catálogo, los precios y el stock.
+- [CPU-Monkey](cpu-monkey/) aporta fichas de procesadores.
+- [Open Icecat](icecat/) aporta fichas de tarjetas gráficas y memorias RAM.
+
 ## Catálogo automático
 
 Al ejecutar `deno task dev` desde `backend`, el servidor consulta todas las
@@ -8,6 +14,9 @@ online. Las publicaciones agotadas también aparecen en el catálogo.
 El servidor actualiza el catálogo en memoria cada 30 minutos. Si una consulta
 falla, conserva el último resultado completo. Si falla al arrancar, usa
 `data.json` mientras espera el siguiente intento.
+
+Al reiniciar el backend se pierde lo reunido en memoria y se repiten las
+consultas. El importador de PC Factory permite guardar una oferta en `data.json`.
 
 Las fichas manuales se enlazan por el ID de PC Factory que figura en una URL
 de `sources` o `offers`. Así conservan su ID, sus especificaciones y las ofertas

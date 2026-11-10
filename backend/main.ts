@@ -1,16 +1,16 @@
 import type { Product } from "../shared/products.ts";
 import data from "./data.json" with { type: "json" };
-import { loadPcFactoryCatalog } from "./scrapers/catalog-pcfactory.ts";
 import {
   type CpuDetails,
   loadCpuDetails,
   mergeCpuDetails,
-} from "./scrapers/cpu-database.ts";
+} from "./scrapers/cpu-monkey/cpu-database.ts";
 import {
   loadPartDetails,
   mergePartDetails,
   type PartMatch,
-} from "./scrapers/part-database.ts";
+} from "./scrapers/icecat/part-database.ts";
+import { loadPcFactoryCatalog } from "./scrapers/pcfactory/catalog-pcfactory.ts";
 
 const curatedProducts = data as Product[];
 const numericFields = new Set(

@@ -1,5 +1,11 @@
 import type { Product } from "../../shared/products.ts";
-import { fetchJson, productsUrl, productUrl, record } from "./pcfactory.ts";
+import {
+  fetchJson,
+  productIdFromUrl,
+  productsUrl,
+  productUrl,
+  record,
+} from "./pcfactory.ts";
 
 const categories = { cpu: 272, gpu: 334, ram: 264 } as const;
 const store = "PC Factory";
@@ -71,6 +77,11 @@ export async function loadPcFactoryCatalog(
         const priceClp = item.precio == null
           ? undefined
           : record(item.precio).efectivo;
+        const thumbnail = item.thumbnail;
+        const image = typeof thumbnail === "string" &&
+          /^\/public\/foto\/(\d+)\/[\w.-]+\.(?:jpe?g|png|webp|avif)$/i.exec(
+            thumbnail,
+          );
         products.set(id, {
           id: `pcfactory-${id}`,
           name: name.trim(),
@@ -79,6 +90,9 @@ export async function loadPcFactoryCatalog(
           category,
           specifications: {},
           imageUrl: null,
+          fallbackImageUrl: image && Number(image[1]) === id
+            ? `https://assets.pcfactory.cl${image[0]}`
+            : undefined,
           verifiedOn,
           sources: [{ name: store, url }],
           offers:
@@ -101,10 +115,8 @@ export async function loadPcFactoryCatalog(
   const matched = new Set<string>();
   const merged = curated.map((product) => {
     const match = [...product.sources, ...product.offers].map(({ url }) => {
-      const id = url.match(
-        /^https:\/\/(?:www\.)?pcfactory\.cl\/producto\/(\d+)-/,
-      )?.[1];
-      return published.get(Number(id));
+      const id = productIdFromUrl(url);
+      return id === undefined ? undefined : published.get(id);
     }).find((item) => item !== undefined);
     if (match) {
       if (matched.has(match.id) || match.category !== product.category) {
@@ -114,6 +126,7 @@ export async function loadPcFactoryCatalog(
     }
     return {
       ...product,
+      fallbackImageUrl: product.fallbackImageUrl ?? match?.fallbackImageUrl,
       offers: [
         ...product.offers.filter((offer) => offer.store !== store),
         ...(match?.offers ?? []),

@@ -34,6 +34,18 @@ deno task scrape:cpu-specs "Intel Core i5-14400F"
 deno task scrape:cpu-specs "AMD Ryzen 5 5500"
 ```
 
+## Especificaciones de GPU y RAM
+
+El mismo arranque carga también las fichas de GPU y RAM desde [Open Icecat](https://icecat.com/).
+El número de parte de PC Factory se usa como identificador. La ficha técnica
+solo se incorpora si coinciden la categoría, la marca y el número de parte o
+código de barras. Las ofertas siguen disponibles mientras se cargan las fichas
+y cuando Icecat carece de una coincidencia verificable.
+
+Las fichas se consultan en segundo plano y se guardan en memoria. El backend
+repite el proceso para los productos nuevos en el siguiente refresco del catálogo
+y vuelve a consultar las coincidencias pendientes a partir de las 24 horas.
+
 ## Consultar un producto de PC Factory
 
 Desde `backend`, ejecutar:

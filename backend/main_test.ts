@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from "@std/assert";
+import { assertEquals, assertExists, assertRejects } from "@std/assert";
 import type { Product } from "../shared/products.ts";
 import { handler } from "./main.ts";
 import { loadPcFactoryCatalog } from "./scrapers/catalog-pcfactory.ts";
@@ -39,6 +39,7 @@ Deno.test("PC Factory refresh serves all published pages and merges offers into 
     slug: "46284-amd-cpu-amd-ryzen-5-5500-am4",
     nombre: "Ryzen 5 5500",
     marca: "AMD",
+    thumbnail: "/public/foto/46284/1_200.jpg",
     precio: { efectivo: 113990 },
   };
   const gpu = {
@@ -48,7 +49,13 @@ Deno.test("PC Factory refresh serves all published pages and merges offers into 
     nombre: "Test GPU",
     precio: null,
   };
-  const secondCpu = { ...cpu, id: 5, slug: "5-cpu", nombre: "Test CPU" };
+  const secondCpu = {
+    ...cpu,
+    id: 5,
+    slug: "5-cpu",
+    nombre: "Test CPU",
+    thumbnail: "/public/foto/5/1_200.jpg",
+  };
   let repeatFirstPage = false;
   globalThis.fetch = (input) => {
     const query = new URL(String(input)).searchParams;
@@ -80,8 +87,11 @@ Deno.test("PC Factory refresh serves all published pages and merges offers into 
     const updated = await loadPcFactoryCatalog(curated);
     const products: Product[] = await handler(request, updated).json();
     const original = curated.find((item) => item.id === "amd-ryzen-5-5500");
-    assertEquals(products.find((item) => item.id === original?.id), {
+    assertExists(original);
+    assertEquals(products.find((item) => item.id === original.id), {
       ...original,
+      fallbackImageUrl:
+        "https://assets.pcfactory.cl/public/foto/46284/1_200.jpg",
       offers: [{
         store: "PC Factory",
         url: `https://www.pcfactory.cl/producto/${cpu.slug}`,
@@ -91,10 +101,22 @@ Deno.test("PC Factory refresh serves all published pages and merges offers into 
     });
     assertEquals(
       products.filter((item) => item.id.startsWith("pcfactory-"))
-        .map((item) => [item.id, item.category, item.offers[0]?.inStock]),
+        .map((
+          item,
+        ) => [
+          item.id,
+          item.category,
+          item.offers[0]?.inStock,
+          item.fallbackImageUrl,
+        ]),
       [
-        ["pcfactory-5", "cpu", false],
-        ["pcfactory-4", "gpu", undefined],
+        [
+          "pcfactory-5",
+          "cpu",
+          false,
+          "https://assets.pcfactory.cl/public/foto/5/1_200.jpg",
+        ],
+        ["pcfactory-4", "gpu", undefined, undefined],
       ],
     );
 

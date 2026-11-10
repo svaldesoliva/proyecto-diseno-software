@@ -1,13 +1,16 @@
+import { useTranslation } from 'react-i18next'
 import type { Product } from '../../../shared/products.ts'
 import ProductImage from '../components/ProductImage.tsx'
 import ProductOffers from '../components/ProductOffers.tsx'
 import ProductSpecifications from '../components/ProductSpecifications.tsx'
 
 export default function ProductDetailPage({ product }: { product: Product }) {
+  const { t } = useTranslation()
+
   return (
     <>
       <header className="page-header">
-        <a href="/">← Volver al catálogo</a>
+        <a href="/">← {t('backToCatalog')}</a>
         <h1>{product.name}</h1>
         <p>{product.model ? `${product.brand} · ${product.model}` : product.brand}</p>
       </header>
@@ -17,10 +20,10 @@ export default function ProductDetailPage({ product }: { product: Product }) {
           <ProductOffers offers={product.offers} />
         </div>
         <div>
-          <h2>Especificaciones</h2>
+          <h2>{t('product.specifications')}</h2>
           <ProductSpecifications specifications={product.specifications} />
           <footer className="product-sources">
-            <p>Fuentes:</p>
+            <p>{t('product.sources')}</p>
             <ul>
               {product.sources.map((source) => (
                 <li key={source.url}>
@@ -28,7 +31,7 @@ export default function ProductDetailPage({ product }: { product: Product }) {
                 </li>
               ))}
             </ul>
-            <small>Consulta: <time dateTime={product.verifiedOn}>{product.verifiedOn}</time></small>
+            <small>{t('product.verifiedOn')} <time dateTime={product.verifiedOn}>{product.verifiedOn}</time></small>
           </footer>
         </div>
       </article>

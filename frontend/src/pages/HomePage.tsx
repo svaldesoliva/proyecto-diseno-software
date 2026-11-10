@@ -1,25 +1,24 @@
+import { useTranslation } from 'react-i18next'
 import type { Product, ProductCategory } from '../../../shared/products.ts'
 import ProductSection from '../components/ProductSection.tsx'
 
-const categories: { category: ProductCategory; title: string }[] = [
-  { category: 'cpu', title: 'Procesadores (CPU)' },
-  { category: 'gpu', title: 'Tarjetas gráficas (GPU)' },
-  { category: 'ram', title: 'Memorias RAM' },
-]
+const categories: ProductCategory[] = ['cpu', 'gpu', 'ram']
 
 export default function HomePage({ products }: { products: Product[] }) {
+  const { t } = useTranslation()
+
   return (
     <>
       <header className="page-header">
-        <h1>Catálogo de componentes</h1>
-        <p>Compara procesadores, tarjetas gráficas y memorias RAM.</p>
+        <h1>{t('title')}</h1>
+        <p>{t('subtitle')}</p>
       </header>
-      {products.length === 0 && <p>No hay componentes disponibles.</p>}
-      {products.length > 0 && categories.map(({ category, title }) => (
+      {products.length === 0 && <p>{t('emptyCatalog')}</p>}
+      {products.length > 0 && categories.map((category) => (
         <ProductSection
           key={category}
           category={category}
-          title={title}
+          title={t(`categories.${category}`)}
           products={products.filter((product) => product.category === category)}
         />
       ))}

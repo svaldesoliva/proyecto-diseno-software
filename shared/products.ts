@@ -16,6 +16,7 @@ interface ProductBase {
   brand: string;
   model: string | null;
   imageUrl: string | null;
+  fallbackImageUrl?: string;
   verifiedOn: string;
   sources: ProductSource[];
   offers: ProductOffer[];

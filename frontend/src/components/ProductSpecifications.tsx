@@ -1,46 +1,16 @@
+import { useTranslation } from 'react-i18next'
 import type { ProductSpecifications as Specifications } from '../../../shared/products.ts'
 
-const labels: Record<string, string> = {
-  series: 'Serie',
-  family: 'Familia',
-  architecture: 'Arquitectura',
-  cores: 'Núcleos',
-  threads: 'Hilos',
-  maxFrequencyGhz: 'Frecuencia máxima (GHz)',
-  l2CacheMb: 'Caché L2 (MB)',
-  l3CacheMb: 'Caché L3 (MB)',
-  basePowerW: 'Potencia base (W)',
-  maxPowerW: 'Potencia máxima (W)',
-  tdpW: 'TDP (W)',
-  socket: 'Socket',
-  maxMemoryGb: 'Memoria máxima (GB)',
-  memoryTypes: 'Tipos de memoria',
-  launchDate: 'Lanzamiento',
-  cpuMarkScore: 'CPU Mark',
-  chip: 'Chip',
-  memoryGb: 'Memoria de video (GB)',
-  memoryType: 'Tipo de memoria',
-  interface: 'Interfaz',
-  memoryBusBits: 'Bus de memoria (bits)',
-  memorySpeedGbps: 'Velocidad de memoria (Gbps)',
-  capacityGb: 'Capacidad total (GB)',
-  modules: 'Módulos',
-  speedMtps: 'Velocidad (MT/s)',
-  defaultSpeedMtps: 'Velocidad predeterminada (MT/s)',
-  speedProfile: 'Perfil de velocidad',
-  formFactor: 'Formato',
-  casLatency: 'Latencia CAS (CL)',
-}
-
 export default function ProductSpecifications({ specifications }: { specifications: Specifications }) {
-  if (Object.keys(specifications).length === 0) return <p>No hay especificaciones registradas.</p>
+  const { t } = useTranslation()
+  if (Object.keys(specifications).length === 0) return <p>{t('product.noSpecifications')}</p>
 
   return (
     <dl className="product-specifications">
       {Object.entries(specifications).map(([key, value]) => (
         <div key={key}>
-          <dt>{labels[key] ?? key}</dt>
-          <dd>{Array.isArray(value) ? value.join(', ') : value ?? 'No publicado'}</dd>
+          <dt>{t(`specifications.${key}`, { defaultValue: key })}</dt>
+          <dd>{Array.isArray(value) ? value.join(', ') : value ?? t('product.notPublished')}</dd>
         </div>
       ))}
     </dl>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { ProductOffer } from '../../../shared/products.ts'
 import { priceFormatter } from '../utils/prices.ts'
 
@@ -13,10 +14,11 @@ function getFaviconUrl(productUrl: string) {
 }
 
 export default function ProductOffers({ offers }: { offers: ProductOffer[] }) {
-  if (offers.length === 0) return <p>No hay ofertas registradas.</p>
+  const { t } = useTranslation()
+  if (offers.length === 0) return <p>{t('product.noOffers')}</p>
 
   return (
-    <ul className="product-offers" aria-label="Ofertas por tienda">
+    <ul className="product-offers" aria-label={t('product.offersByStore')}>
       {offers.map((offer) => (
         <li key={offer.url}>
           <a className="product-offer" href={offer.url} target="_blank" rel="noopener noreferrer">
@@ -31,7 +33,7 @@ export default function ProductOffers({ offers }: { offers: ProductOffer[] }) {
             <span className="product-offer-content">
               <span>{offer.store}</span>
               <strong>{priceFormatter.format(offer.priceClp)}</strong>
-              {!offer.inStock && <small>Sin stock online</small>}
+              {!offer.inStock && <small>{t('product.outOfStock')}</small>}
             </span>
             <span className="product-offer-arrow" aria-hidden="true">↗</span>
           </a>

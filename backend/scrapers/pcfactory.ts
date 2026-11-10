@@ -32,6 +32,13 @@ export function productUrl(productId: number, slug: unknown): string {
   return `https://www.pcfactory.cl/producto/${slug}`;
 }
 
+export function productIdFromUrl(url: string): number | undefined {
+  const id = Number(
+    url.match(/^https:\/\/(?:www\.)?pcfactory\.cl\/producto\/(\d+)-/)?.[1],
+  );
+  if (Number.isSafeInteger(id) && id > 0) return id;
+}
+
 export async function getPcFactoryProduct(productId: number) {
   if (!Number.isSafeInteger(productId) || productId <= 0) {
     throw new RangeError("PC Factory product ID must be a positive integer");

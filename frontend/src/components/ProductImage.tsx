@@ -1,19 +1,24 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Product } from '../../../shared/products.ts'
 
 export default function ProductImage({ product }: { product: Product }) {
-  const [imageFailed, setImageFailed] = useState(false)
+  const { t } = useTranslation()
+  const [failedUrls, setFailedUrls] = useState<string[]>([])
+  const src = [product.imageUrl, product.fallbackImageUrl]
+    .find((url) => url && !failedUrls.includes(url))
 
   return (
     <div className="product-image">
-      {product.imageUrl && !imageFailed ? (
+      {src ? (
         <img
-          src={product.imageUrl}
+          key={src}
+          src={src}
           alt={product.name}
           loading="lazy"
-          onError={() => setImageFailed(true)}
+          onError={() => setFailedUrls((urls) => [...urls, src])}
         />
-      ) : <span>Imagen no disponible</span>}
+      ) : <span>{t('product.imageUnavailable')}</span>}
     </div>
   )
 }

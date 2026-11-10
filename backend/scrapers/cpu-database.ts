@@ -245,6 +245,7 @@ export function mergeCpuDetails(
       );
       catalog.set(key, {
         ...existing,
+        fallbackImageUrl: existing.fallbackImageUrl ?? product.fallbackImageUrl,
         offers: [...offers.values()],
         sources: [...sources.values()],
       });

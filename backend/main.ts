@@ -6,6 +6,11 @@ import {
   loadCpuDetails,
   mergeCpuDetails,
 } from "./scrapers/cpu-database.ts";
+import {
+  loadPartDetails,
+  mergePartDetails,
+  type PartMatch,
+} from "./scrapers/part-database.ts";
 
 const curatedProducts = data as Product[];
 const numericFields = new Set(
@@ -85,8 +90,17 @@ if (import.meta.main) {
   let catalog = curatedProducts;
   let products = curatedProducts;
   const cpuDetails = new Map<string, CpuDetails>();
+  const partMatches = new Map<string, PartMatch>();
   let cpuRefresh: Promise<void> | undefined;
+  let partRefresh: Promise<void> | undefined;
   let cpuRetryAt = 0;
+  let partRetryAt = 0;
+  const publish = () => {
+    products = mergePartDetails(
+      mergeCpuDetails(catalog, cpuDetails),
+      partMatches,
+    );
+  };
   const refresh = async () => {
     try {
       catalog = await loadPcFactoryCatalog(curatedProducts);
@@ -97,18 +111,31 @@ if (import.meta.main) {
         error,
       );
     }
-    products = mergeCpuDetails(catalog, cpuDetails);
+    publish();
     if (!cpuRefresh && Date.now() >= cpuRetryAt) {
       cpuRefresh = loadCpuDetails(catalog, cpuDetails).then((retryAt) => {
         cpuRetryAt = retryAt ?? 0;
         if (retryAt) {
           console.warn("CPU-Monkey rate limited the refresh (HTTP 429).");
         }
-        products = mergeCpuDetails(catalog, cpuDetails);
+        publish();
       }).catch((error) => {
         console.error("CPU specifications refresh failed.", error);
       }).finally(() => {
         cpuRefresh = undefined;
+      });
+    }
+    if (!partRefresh && Date.now() >= partRetryAt) {
+      partRefresh = loadPartDetails(catalog, partMatches).then((retryAt) => {
+        partRetryAt = retryAt ?? 0;
+        if (retryAt) {
+          console.warn("Icecat rate limited the refresh (HTTP 429).");
+        }
+        publish();
+      }).catch((error) => {
+        console.error("GPU and RAM specifications refresh failed.", error);
+      }).finally(() => {
+        partRefresh = undefined;
       });
     }
     Deno.unrefTimer(setTimeout(refresh, 30 * 60_000));

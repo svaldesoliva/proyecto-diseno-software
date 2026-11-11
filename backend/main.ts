@@ -1,5 +1,6 @@
 import type { Product } from "../shared/products.ts";
 import data from "./data.json" with { type: "json" };
+import { openAuth } from "./auth.ts";
 import {
   type CpuDetails,
   loadCpuDetails,
@@ -21,7 +22,11 @@ const numericFields = new Set(
   ),
 );
 
-export function handler(req: Request, products = curatedProducts): Response {
+export function handler(
+  req: Request,
+  products = curatedProducts,
+  isAuthenticated: (req: Request) => boolean = () => false,
+): Response {
   const url = new URL(req.url);
   const category = url.pathname.match(
     /^\/api\/products\/category\/(cpu|gpu|ram)$/,
@@ -35,6 +40,13 @@ export function handler(req: Request, products = curatedProducts): Response {
     return Response.json({ error: "Method not allowed" }, {
       status: 405,
       headers: { Allow: "GET" },
+    });
+  }
+
+  if (!isAuthenticated(req)) {
+    return Response.json({ error: "unauthorized" }, {
+      status: 401,
+      headers: { "Cache-Control": "no-store" },
     });
   }
 
@@ -83,10 +95,11 @@ export function handler(req: Request, products = curatedProducts): Response {
     }
   }
 
-  return Response.json(results);
+  return Response.json(results, { headers: { "Cache-Control": "no-store" } });
 }
 
 if (import.meta.main) {
+  const auth = openAuth();
   let catalog = curatedProducts;
   let products = curatedProducts;
   const cpuDetails = new Map<string, CpuDetails>();
@@ -141,6 +154,9 @@ if (import.meta.main) {
     Deno.unrefTimer(setTimeout(refresh, 30 * 60_000));
   };
 
+  Deno.serve((req, { remoteAddr }) =>
+    auth.route(req, remoteAddr.hostname) ??
+      handler(req, products, (request) => Boolean(auth.getUser(request)))
+  );
   await refresh();
-  Deno.serve((req) => handler(req, products));
 }

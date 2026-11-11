@@ -1,8 +1,9 @@
 import type { Product } from '../../../shared/products.ts'
 
-export async function getProducts(signal?: AbortSignal): Promise<Product[]> {
+export async function getProducts(signal?: AbortSignal): Promise<Product[] | null> {
   const response = await fetch('/api/products', { signal })
 
+  if (response.status === 401) return null
   if (!response.ok) {
     throw new Error(`Product request failed: ${response.status}`)
   }

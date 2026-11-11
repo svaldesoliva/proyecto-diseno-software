@@ -1,12 +1,14 @@
 {
   "tasks": {
-    "dev": "deno run --watch --allow-net main.ts",
+    "dev": "deno run --watch --env-file=.env --allow-net --allow-env=APP_ORIGIN,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET --allow-read=.auth --allow-write=.auth main.ts",
     "check": "deno check main.ts scrapers/*/*.ts",
+    "test": "deno test",
     "scrape:cpu-specs": "deno run --allow-net=www.cpu-monkey.com scrapers/cpu-monkey/cpu-database.ts",
     "scrape:pcfactory": "deno run --allow-net=api.pcfactory.cl scrapers/pcfactory/pcfactory.ts",
     "import:pcfactory": "deno run --allow-net=api.pcfactory.cl --allow-read=. --allow-write=. scrapers/pcfactory/import-pcfactory.ts"
   },
   "imports": {
-    "htmlparser2": "npm:htmlparser2@10.1.0"
+    "htmlparser2": "npm:htmlparser2@10.1.0",
+    "openid-client": "npm:openid-client@6.8.8"
   }
 }

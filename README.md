@@ -38,16 +38,53 @@ npm install
 npm run dev
 ```
 
-Abrir la dirección que muestra Vite (normalmente `http://localhost:5173`). El proxy
+Abrir `http://localhost:5173`. El proxy
 de Vite envía las consultas `/api` al backend en `http://localhost:8000`.
+
+## Inicio de sesión
+
+Abre `http://localhost:5173` y elige **Crear cuenta** para probar el acceso local.
+Ingresa un nombre de usuario y una contraseña de al menos 12 caracteres. Las
+cuentas se guardan en `backend/.auth/accounts.sqlite` con scrypt y un salt
+aleatorio. Deno abre una sesión de 8 horas y entrega una cookie `HttpOnly`.
+**Cerrar sesión** revoca la sesión en el servidor. Los enlaces a un producto
+conservan el destino durante el inicio de sesión.
+
+Para activar **Continuar con Google**:
+
+1. En [Google Auth Platform](https://console.cloud.google.com/auth/clients),
+   crea un cliente OAuth de tipo **Aplicación web**. Si la aplicación está en
+   modo de prueba, agrega tu cuenta como usuario de prueba en **Público**.
+2. Registra `http://localhost:5173/api/auth/google/callback` como URI de
+   redireccionamiento autorizado.
+3. En `backend/.env`, completa `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET`.
+   Reinicia Deno y abre la app en `http://localhost:5173`.
+
+Google usa [OpenID Connect](https://developers.google.com/identity/openid-connect/openid-connect)
+con el flujo de código y PKCE. El backend valida el token de identidad con
+[`openid-client`](https://github.com/panva/openid-client), de Filip Skokan, y
+usa el identificador `sub` de Google. Las cuentas locales y de Google son
+independientes. Si las credenciales de Google quedan vacías, la app ofrece solo
+el acceso local.
+
+Para servir la app fuera de localhost, configura `APP_ORIGIN` con el origen HTTPS
+del frontend, registra el callback en ese mismo origen y reenvía `/api` a Deno.
 
 ## Verificar
 
-- Desde `backend`, ejecuta `deno task check` y `deno lint`.
+- Desde `backend`, ejecuta `deno task check`, `deno lint` y `deno task test`.
 - Desde `frontend`, ejecuta `npm run lint` y `npm run build`.
 - `npm run build` comprueba los tipos antes de generar la página.
 
 ## API
+
+- `POST /api/auth/register` y `POST /api/auth/login`: reciben `{ username, password }` y abren una sesión.
+- `GET /api/auth/session`: consulta la sesión y la disponibilidad de Google.
+- `POST /api/auth/logout`: cierra la sesión.
+- `GET /api/auth/google` y `GET /api/auth/google/callback`: inicio y retorno de Google.
+
+El catálogo requiere una sesión válida. Sin ella, las consultas de productos
+devuelven `401`.
 
 - `GET /api/products`: catálogo completo.
 - `GET /api/products/category/cpu`: procesadores.
@@ -60,6 +97,7 @@ Las rutas o categorías inexistentes devuelven `404`. Las rutas de productos sol
 
 Se pueden agregar parámetros tanto a `/api/products` como a las rutas por categoría:
 
+Sería `GET /api/products?` y agregar:
 - `id=intel-core-i9-14900k`: ID exacto.
 - `name=ryzen`: parte del nombre, sin distinguir mayúsculas.
 - `category=gpu`: categoría (`cpu`, `gpu` o `ram`).

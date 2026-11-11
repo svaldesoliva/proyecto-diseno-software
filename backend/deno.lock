@@ -1,7 +1,8 @@
 {
   "version": "5",
   "specifiers": {
-    "npm:htmlparser2@10.1.0": "10.1.0"
+    "npm:htmlparser2@10.1.0": "10.1.0",
+    "npm:openid-client@6.8.8": "6.8.8"
   },
   "npm": {
     "dom-serializer@2.0.0": {
@@ -43,11 +44,25 @@
         "domutils",
         "entities@7.0.1"
       ]
+    },
+    "jose@6.2.16": {
+      "integrity": "sha512-4LSJpbuBuPdGrONCdZUy0xnxtLf8eEz+EY0SMXdHQEBU7bgUHDVblU/JAjryv3wID9/LK7/YuwFwq+AQNfMscQ=="
+    },
+    "oauth4webapi@3.8.8": {
+      "integrity": "sha512-8N28E+a/oxfXWBgOMt+ZP/JUf/XR+IFbvkAEPP3gznXOMv9BpAAwiIj0TFNz3tGTPc0ZQ8zmWBNgN1nAys0gng=="
+    },
+    "openid-client@6.8.8": {
+      "integrity": "sha512-ZsucJA5Ad04Uv7YN4ql+s4GXNmb9uAYQwyJTsJx7CH/MX3JZioLE2pVKi1SC+YrbSLA4Px3Gi30dMjgOZtb6pA==",
+      "dependencies": [
+        "jose",
+        "oauth4webapi"
+      ]
     }
   },
   "workspace": {
     "dependencies": [
-      "npm:htmlparser2@10.1.0"
+      "npm:htmlparser2@10.1.0",
+      "npm:openid-client@6.8.8"
     ]
   }
 }

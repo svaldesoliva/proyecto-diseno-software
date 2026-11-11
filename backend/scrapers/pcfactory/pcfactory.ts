@@ -1,3 +1,4 @@
+import process from "node:process";
 // shortcut: these site endpoints are undocumented, revisit if PC Factory changes them.
 export const productsUrl =
   "https://api.pcfactory.cl/pcfactory-services-catalogo/v1/catalogo/productos";
@@ -56,10 +57,10 @@ export async function getPcFactoryProduct(productId: number) {
 
 if (import.meta.main) {
   try {
-    const result = await getPcFactoryProduct(Number(Deno.args[0]));
+    const result = await getPcFactoryProduct(Number(process.argv[2]));
     console.log(JSON.stringify(result, null, 2));
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));
-    Deno.exit(1);
+    process.exit(1);
   }
 }

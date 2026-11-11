@@ -3,6 +3,7 @@ import type { Product } from '../../../shared/products.ts'
 import ProductImage from '../components/ProductImage.tsx'
 import ProductOffers from '../components/ProductOffers.tsx'
 import ProductSpecifications from '../components/ProductSpecifications.tsx'
+import PriceHistory from '../components/PriceHistory.tsx'
 
 export default function ProductDetailPage({ product }: { product: Product }) {
   const { t } = useTranslation()
@@ -35,6 +36,7 @@ export default function ProductDetailPage({ product }: { product: Product }) {
           </footer>
         </div>
       </article>
+      <PriceHistory key={product.id} productId={product.id} />
     </>
   )
 }

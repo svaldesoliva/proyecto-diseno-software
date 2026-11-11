@@ -1,0 +1,10 @@
+.git
+.vercel
+**/node_modules
+**/.env
+**/.env.*
+**/.auth
+**/.DS_Store
+**/*.pdf
+frontend/dist
+docs

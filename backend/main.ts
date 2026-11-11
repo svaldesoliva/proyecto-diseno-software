@@ -1,17 +1,5 @@
 import type { Product } from "../shared/products.ts";
 import data from "./data.json" with { type: "json" };
-import {
-  type CpuDetails,
-  loadCpuDetails,
-  mergeCpuDetails,
-} from "./scrapers/cpu-monkey/cpu-database.ts";
-import {
-  loadPartDetails,
-  mergePartDetails,
-  type PartMatch,
-} from "./scrapers/icecat/part-database.ts";
-import { loadPcFactoryCatalog } from "./scrapers/pcfactory/catalog-pcfactory.ts";
-
 const curatedProducts = data as Product[];
 const numericFields = new Set(
   curatedProducts.flatMap((product) =>
@@ -21,7 +9,11 @@ const numericFields = new Set(
   ),
 );
 
-export function handler(req: Request, products = curatedProducts): Response {
+export function handler(
+  req: Request,
+  products = curatedProducts,
+  isAuthenticated: (req: Request) => boolean = () => false,
+): Response {
   const url = new URL(req.url);
   const category = url.pathname.match(
     /^\/api\/products\/category\/(cpu|gpu|ram)$/,
@@ -35,6 +27,13 @@ export function handler(req: Request, products = curatedProducts): Response {
     return Response.json({ error: "Method not allowed" }, {
       status: 405,
       headers: { Allow: "GET" },
+    });
+  }
+
+  if (!isAuthenticated(req)) {
+    return Response.json({ error: "unauthorized" }, {
+      status: 401,
+      headers: { "Cache-Control": "no-store" },
     });
   }
 
@@ -83,64 +82,5 @@ export function handler(req: Request, products = curatedProducts): Response {
     }
   }
 
-  return Response.json(results);
-}
-
-if (import.meta.main) {
-  let catalog = curatedProducts;
-  let products = curatedProducts;
-  const cpuDetails = new Map<string, CpuDetails>();
-  const partMatches = new Map<string, PartMatch>();
-  let cpuRefresh: Promise<void> | undefined;
-  let partRefresh: Promise<void> | undefined;
-  let cpuRetryAt = 0;
-  let partRetryAt = 0;
-  const publish = () => {
-    products = mergePartDetails(
-      mergeCpuDetails(catalog, cpuDetails),
-      partMatches,
-    );
-  };
-  const refresh = async () => {
-    try {
-      catalog = await loadPcFactoryCatalog(curatedProducts);
-      console.log(`Catalog refreshed (${catalog.length} products)`);
-    } catch (error) {
-      console.error(
-        "PC Factory refresh failed. Serving previous catalog.",
-        error,
-      );
-    }
-    publish();
-    if (!cpuRefresh && Date.now() >= cpuRetryAt) {
-      cpuRefresh = loadCpuDetails(catalog, cpuDetails).then((retryAt) => {
-        cpuRetryAt = retryAt ?? 0;
-        if (retryAt) {
-          console.warn("CPU-Monkey rate limited the refresh (HTTP 429).");
-        }
-        publish();
-      }).catch((error) => {
-        console.error("CPU specifications refresh failed.", error);
-      }).finally(() => {
-        cpuRefresh = undefined;
-      });
-    }
-    if (!partRefresh && Date.now() >= partRetryAt) {
-      partRefresh = loadPartDetails(catalog, partMatches).then((retryAt) => {
-        partRetryAt = retryAt ?? 0;
-        if (retryAt) {
-          console.warn("Icecat rate limited the refresh (HTTP 429).");
-        }
-        publish();
-      }).catch((error) => {
-        console.error("GPU and RAM specifications refresh failed.", error);
-      }).finally(() => {
-        partRefresh = undefined;
-      });
-    }
-    Deno.unrefTimer(setTimeout(refresh, 30 * 60_000));
-  };
-
-  await refresh();
-  Deno.serve((req) => handler(req, products));
+  return Response.json(results, { headers: { "Cache-Control": "no-store" } });
 }

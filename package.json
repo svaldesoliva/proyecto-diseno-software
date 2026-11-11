@@ -1,0 +1,26 @@
+{
+  "name": "comparador-componentes",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "build": "tsc --noEmit && npm --prefix frontend run build",
+    "test": "node --experimental-test-module-mocks --test backend/*.test.ts",
+    "refresh": "node --env-file=backend/.env backend/refresh.ts",
+    "migrate": "node --env-file=backend/.env backend/migrate.ts",
+    "enrich": "node --env-file=backend/.env backend/refresh.ts --enrich",
+    "import:accounts": "node --env-file=backend/.env backend/import-accounts.ts"
+  },
+  "dependencies": {
+    "htmlparser2": "^10.1.0",
+    "openid-client": "^6.8.8",
+    "postgres": "^3.4.8"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.17",
+    "@types/node": "^24.19.2",
+    "typescript": "^7.0.2"
+  }
+}

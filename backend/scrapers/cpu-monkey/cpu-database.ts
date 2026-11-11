@@ -1,3 +1,4 @@
+import process from "node:process";
 import { DomUtils, parseDocument } from "htmlparser2";
 import type { Product } from "../../../shared/products.ts";
 
@@ -275,10 +276,10 @@ export function mergeCpuDetails(
 }
 
 if (import.meta.main) {
-  const details = await scrapeCpuDetails(Deno.args.join(" "));
+  const details = await scrapeCpuDetails(process.argv.slice(2).join(" "));
   if (!details) {
     console.error("No exact CPU model found. Example: Intel Core i5-14400F");
-    Deno.exit(1);
+    process.exit(1);
   }
   console.log(JSON.stringify(details, null, 2));
 }

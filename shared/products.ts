@@ -71,3 +71,14 @@ export type Product =
 
 export type ProductCategory = Product["category"];
 export type ProductSpecifications = Product["specifications"];
+
+export interface PriceHistoryPage {
+  entries: {
+    id: string;
+    store: string;
+    url: string;
+    priceClp: number;
+    observedAt: string;
+  }[];
+  nextCursor: string | null;
+}

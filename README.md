@@ -48,16 +48,20 @@ de las URL de Vercel se descarta porque corresponde a su driver HTTP.
 En Vercel se acepta también `POSTGRES_URL`, que instala automáticamente la
 integración con Supabase; no hace falta duplicar ese secreto como `DATABASE_URL`.
 
-Ejecuta una sola vez la migración en una base nueva:
+El proyecto publicado ya tiene el esquema y su migración inicial registrados.
+Para aplicar migraciones manualmente a otro proyecto, autentica y vincula la CLI
+con el proyecto de destino antes de ejecutarlas:
 
 ```bash
+npx --yes supabase@3.2.0 login
+npx --yes supabase@3.2.0 link --project-ref <project-ref>
 npm run migrate
 ```
 
-También puedes ejecutar el contenido de
-[`supabase/migrations/202611210001_catalog_price_history.sql`](supabase/migrations/202611210001_catalog_price_history.sql)
-en el SQL Editor de Supabase. Usa una de las dos vías. La migración es
-transaccional y crea el esquema privado `app_private`; no borra otras tablas.
+La CLI aplica solo los archivos pendientes de `supabase/migrations` y registra
+su versión en `supabase_migrations.schema_migrations`. No vuelvas a ejecutar la
+migración inicial desde el SQL Editor. El esquema privado `app_private` contiene
+las tablas de la aplicación.
 No expongas ese esquema mediante la Data API. Las credenciales de la base se
 usan exclusivamente en el backend, nunca en variables `VITE_*`.
 
@@ -133,7 +137,7 @@ El seguimiento actual cubre las ofertas de PC Factory que consulta el scraper.
    **Framework Preset: Other** (la compilación de Vite está configurada explícitamente).
    No selecciones `frontend/`: las funciones y `vercel.json` están en la raíz.
 3. El `vercel.json` configura Vite, instala ambos grupos de dependencias,
-   ejecuta `npm run build` y publica `frontend/dist`. Las rutas `/api/*` las
+   ejecuta `npm test && npm run build` y publica `frontend/dist`. Las rutas `/api/*` las
    atiende la función `api/index.ts` mediante un rewrite, usando el mismo dominio y cookies.
 4. Agrega estas variables de entorno para **Production** y despliega:
 
@@ -168,6 +172,41 @@ Referencias: [PostgreSQL en Supabase](https://supabase.com/docs/guides/database/
 [Vercel Functions](https://vercel.com/docs/functions),
 [límites de cron](https://vercel.com/docs/cron-jobs/usage-and-pricing) y
 [protección del cron](https://vercel.com/docs/cron-jobs/manage-cron-jobs).
+
+## Despliegue desde GitHub
+
+El repositorio de producción es `svaldesoliva/proyecto-diseno-software`, rama `main`.
+Después de un push o merge a esa rama:
+
+- Vercel instala las dependencias, ejecuta las pruebas y compila con `vercel.json`.
+  Si el proceso pasa, publica el frontend y la API en el dominio de producción.
+- Supabase sincroniza el mismo repositorio desde `.` y aplica las migraciones
+  pendientes de `supabase/migrations`. La integración tiene **Deploy to production**
+  activado para `main`. **Automatic branching** queda desactivado; no crea bases
+  de datos de pago para las ramas de trabajo.
+
+`supabase/config.toml` habilita las migraciones y desactiva el seed. La migración
+`202611210001` ya se registró como aplicada porque el esquema se creó antes de
+conectar GitHub. Los productos, precios históricos, cuentas y sesiones se
+conservan en Supabase; no se exportan al repositorio ni se reemplazan al desplegar.
+
+Para cambiar el esquema, crea una nueva migración, revisa su SQL y ejecuta las
+pruebas antes de subirla:
+
+```bash
+npx --yes supabase@3.2.0 migration new descripcion_del_cambio
+npm test
+npm run build
+git add .
+git commit -m "Describe el cambio"
+git push origin main
+```
+
+No edites migraciones ya aplicadas. Mantén los cambios de esquema compatibles
+con la versión anterior de la API: Supabase y Vercel despliegan por separado.
+Las pruebas reproducen toda la cadena de migraciones en PostgreSQL en memoria.
+Los secretos permanecen en Vercel/Supabase; `.env`, SQLite, `.temp` y `.vercel`
+están excluidos del control de versiones.
 
 ## Inicio de sesión
 

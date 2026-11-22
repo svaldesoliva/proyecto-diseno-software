@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { after, before, beforeEach, mock, test } from "node:test";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -53,15 +53,13 @@ const { refreshCatalog } = await import("./refresh.ts");
 const { default: vercelEntry } = await import("../api/index.ts");
 
 before(async () => {
-  await db.exec(
-    await readFile(
-      new URL(
-        "../supabase/migrations/202611210001_catalog_price_history.sql",
-        import.meta.url,
-      ),
-      "utf8",
-    ),
-  );
+  const directory = new URL("../supabase/migrations/", import.meta.url);
+  const files = (await readdir(directory)).filter((name) =>
+    /^\d+_.+\.sql$/.test(name)
+  ).sort();
+  for (const file of files) {
+    await db.exec(await readFile(new URL(file, directory), "utf8"));
+  }
 });
 beforeEach(async () => {
   observation = 0;

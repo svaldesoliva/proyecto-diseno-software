@@ -9,7 +9,7 @@
     "build": "tsc --noEmit && npm --prefix frontend run build",
     "test": "node --experimental-test-module-mocks --test backend/*.test.ts",
     "refresh": "node --env-file=backend/.env backend/refresh.ts",
-    "migrate": "node --env-file=backend/.env backend/migrate.ts",
+    "migrate": "npx --yes supabase@3.2.0 db push --remote",
     "enrich": "node --env-file=backend/.env backend/refresh.ts --enrich",
     "import:accounts": "node --env-file=backend/.env backend/import-accounts.ts"
   },
